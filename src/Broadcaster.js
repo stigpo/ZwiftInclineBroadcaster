@@ -49,7 +49,7 @@ function simple_moving_averager(period) {
     return function(num) {
         nums.push(num);
         if (nums.length > period)
-            nums.splice(0,1);  // remove the first element of the array
+            nums.splice(0,1);
         var sum = 0;
         for (var i in nums)
             sum += nums[i];
@@ -116,7 +116,7 @@ const WorldAltitudeToMetersFactor = new Map([
     [World.Richmond.id, 1],
     [World.London.id, 1],
     [World.NewYork.id, 1],
-    [World.Innsbruck.id, 1], // Based on the offset, I am betting on this being 0.5 and +4500 on offset (still odd)
+    [World.Innsbruck.id, 1],
     [6, 1],
     [World.Yorkshire.id, 1],
     [8, 1],
@@ -163,7 +163,6 @@ function CalcSnr(absDeltaAlt, deltaDist) {
 var send_sma = simple_moving_averager(3);
 function SendGrade(grade) {
     if (Math.abs(grade) < 200) {
-        //var gradeAvg = send_sma(grade);
         grade = Round10th(grade);
         if (prevGrade != grade) {
             prevGrade = grade;

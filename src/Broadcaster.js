@@ -147,6 +147,7 @@ var curGrade = 0;
 var prevGrade = -10000;
 var prevWorld = 0;
 var first = true;
+var iter = 0;
 var accElevationGain = 0;
 var accElevationLoss = 0;
 
@@ -160,7 +161,6 @@ function CalcSnr(absDeltaAlt, deltaDist) {
     return snr;
 }
 
-var send_sma = simple_moving_averager(3);
 function SendGrade(grade) {
     if (Math.abs(grade) < 200) {
         grade = Round10th(grade);
@@ -191,15 +191,28 @@ function CalculateGrade(playerState) {
         alt = alt + altToMeterOffset;
     }
 
-    first = playerState.world != prevWorld;
-    prevWorld = playerState.world;
-
     alt = alt / 100.0;
     altO = altO / 100.0;
+    var newWorld = playerState.world != prevWorld;
+    prevWorld = playerState.world;
 
     var deltaDist = dist - prevDist;
-    if (deltaDist < 0 || dist == 0) {
+    if (deltaDist < 0 || dist == 0 || newWorld) {
+        prevDist = dist; // Make sure we are not stuck in negative delta
         first = true;
+        return;
+    }
+
+    if (iter++ < 10)
+    {
+        var curGrade
+        var snr = 0.0;
+        var deltaAlt = alt - prevAlt;
+        var instantDeltaAlt = alt - prevInstantAlt;
+        prevInstantAlt = alt
+        var absDeltaAlt = Math.abs(deltaAlt);
+        var absInstantDeltaAlt = Math.abs(instantDeltaAlt);
+        console.log(`---- ${iter} Dist=${dist} (${deltaDist}) Alt=${alt.toFixed(2)}/AltO=${altO.toFixed(2)} (${deltaAlt.toFixed(3)}) snr=${snr.toFixed(3)} up=${accElevationGain.toFixed(1)} down=${accElevationLoss.toFixed(1)} world=${playerState.world} first=${first}`);
     }
 
     if (first) {
@@ -208,6 +221,7 @@ function CalculateGrade(playerState) {
         prevGrade = -10000;
         accElevationGain = accElevationLoss = 0;
         first = false;
+        iter = 0;
         return;
     }
 

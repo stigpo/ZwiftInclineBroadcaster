@@ -26,7 +26,6 @@ node .\src\Broadcaster.js
 
 ## Running
 
-Needs to run with admin priviledges for ZMM to work.
 ```
 node .\src\Broadcaster.js
 ```

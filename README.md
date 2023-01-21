@@ -12,7 +12,6 @@ Download [node.js](https://nodejs.org/en/download/current/)\
 During the installation process you must tick the option to install additional tools for Native Modules (Chocolatey)\
 ![Image of Tools for Native Modules installer page](/images/NodeInstallNativeTools.png)
 
-
 ```
 mkdir zib
 cd zib
@@ -30,6 +29,11 @@ node .\src\Broadcaster.js
 Needs to run with admin priviledges for ZMM to work.
 ```
 node .\src\Broadcaster.js
+```
+
+If for some reason the IP address calculated by the script is correct (it should be your LAN address), you can override it
+```
+node .\src\Broadcaster.js [<ip> [<mask>]]
 ```
 
 ## Supported

@@ -8,8 +8,10 @@ If you want information on the BLE/FTMS approach you can have a look at [How to 
 
 ## Installing
 
-Download [node.js](https://nodejs.org/en/download/current/)
-During the installation process you must tick the option to install additional tools for Native Modules (Chocolatey)
+Download [node.js](https://nodejs.org/en/download/current/)\
+During the installation process you must tick the option to install additional tools for Native Modules (Chocolatey)\
+![Image of Tools for Native Modules installer page](/images/NodeInstallNativeTools.png)
+
 
 ```
 mkdir zib

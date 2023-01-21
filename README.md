@@ -6,7 +6,25 @@ Please note that this tool only broadcasts the incline over UDP on the local net
 
 If you want information on the BLE/FTMS approach you can have a look at [How to connect an FTMS App to Zwift](https://1drv.ms/w/s!An3xkqoDsGqcp8Z0xYOxR-Rdak3UvA?e=o4Get4)
 
+## Installing
+
+Download [node.js](https://nodejs.org/en/download/current/)
+During the installation process you must tick the option to install additional tools for Native Modules (Chocolatey)
+
+```
+mkdir zib
+cd zib
+
+git clone https://github.com/stigpo/ZwiftInclineBroadcaster.git
+cd .\ZwiftInclineBroadcaster\
+
+npm install
+node .\src\Broadcaster.js
+
+```
+
 ## Running
+
 Needs to run with admin priviledges for ZMM to work.
 ```
 node .\src\Broadcaster.js

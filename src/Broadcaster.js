@@ -1,6 +1,4 @@
-
 console.log('Require: ZwiftMemoryMonitor')
-
 const ZwiftMemoryMonitor = require('@zwfthcks/zwift-memory-monitor');
 const zmm = new ZwiftMemoryMonitor(
     {
@@ -11,12 +9,6 @@ const zmm = new ZwiftMemoryMonitor(
         timeout: 250
     });
 
-try {
-    var Cap = require('cap').Cap;
-} catch(e) {
-    console.log(e)
-}
-
 const ip = require('ip')
 const dgram = require('dgram')
 
@@ -25,8 +17,7 @@ var broadcastMask = "0.0.0.255";
 if (process.argv.length > 2) {
     publicIp = process.argv[2];
 }
-else
-{
+else {
     publicIp = ip.address("public");
 }
 
@@ -196,7 +187,7 @@ function CalculateGrade(playerState) {
     var dist = playerState.distance;
     var alt = playerState.altitude;
     var altO = alt;
- 
+
     var altToMeterFactor = WorldAltitudeToMetersFactor.get(playerState.world)
     if (altToMeterFactor !== undefined && altToMeterFactor != 1) {        
         alt = alt * altToMeterFactor;        
@@ -282,15 +273,7 @@ function CalculateGrade(playerState) {
 }
 
 if (zmm) {
-    var interfaceName = "NA";
-    try {
-        interfaceName = JSON.stringify(Cap.findDevice(publicIp), null, 4);
-    }
-    catch (e) {
-        console.log('Failed to find interface for ', publicIp)
-    }
-
-    console.log('Broadcasting on:', publicIp, interfaceName);
+    console.log('Broadcasting on:', publicIp);
 
     zmm.on('data', (playerState) => {
         try {
@@ -300,7 +283,7 @@ if (zmm) {
         } catch (e) {
             console.log(e)
         }
-   })
+    })
 
     zmm.on('status.started', () => {
         console.log('status.started')
@@ -314,6 +297,14 @@ if (zmm) {
         console.log('status.stopping')
     })
 
+    zmm.on('info', (info) => {
+        try {
+            console.log(info)
+            console.log("Info: %j", info)
+        } catch (e) {
+            console.log(e)
+        }
+    })
 
     try {
         zmm.start()

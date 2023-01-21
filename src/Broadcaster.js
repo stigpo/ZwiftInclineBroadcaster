@@ -1,6 +1,4 @@
-
 console.log('Require: ZwiftMemoryMonitor')
-
 const ZwiftMemoryMonitor = require('@zwfthcks/zwift-memory-monitor');
 const zmm = new ZwiftMemoryMonitor(
     {
@@ -11,12 +9,6 @@ const zmm = new ZwiftMemoryMonitor(
         timeout: 250
     });
 
-try {
-    var Cap = require('cap').Cap;
-} catch(e) {
-    console.log(e)
-}
-
 const ip = require('ip')
 const dgram = require('dgram')
 
@@ -25,8 +17,7 @@ var broadcastMask = "0.0.0.255";
 if (process.argv.length > 2) {
     publicIp = process.argv[2];
 }
-else
-{
+else {
     publicIp = ip.address("public");
 }
 
@@ -75,18 +66,18 @@ function simple_moving_averager(period) {
 }
 
 var buffer = require('buffer');
-function callbackInclineChanged(grade) {
+function callbackInclineChanged(grade, playerId) {
     try {
         console.log('Grade changed: ', grade.toFixed(1));
         var payload = {
-
+            playerid: playerId,
             grade: Math.round(grade * 10),
             seq: Date.now()
         };
         var dataStr = JSON.stringify(payload);
         var data = Buffer.from(dataStr);
         server.send(data, 0, data.length, PORT, BROADCAST_ADDR, function () {
-            //console.log("Sent '" + data + "'");
+        //console.log("Sent '" + data + "'");
         });
     } catch (e) {
         console.log(e)
@@ -176,13 +167,13 @@ function CalcSnr(absDeltaAlt, deltaDist) {
     return snr;
 }
 
-function SendGrade(grade) {
+function SendGrade(grade, playerId) {
     if (Math.abs(grade) < 200) {
         grade = Round10th(grade);
         if (prevGrade != grade) {
             prevGrade = grade;
             if (callbackInclineChanged != null) {
-                callbackInclineChanged(grade);
+                callbackInclineChanged(grade, playerId);
             }
         }
     }
@@ -193,10 +184,11 @@ function Round10th(num) {
 }
 
 function CalculateGrade(playerState) {
+    var playerId = playerState.player;
     var dist = playerState.distance;
     var alt = playerState.altitude;
     var altO = alt;
- 
+
     var altToMeterFactor = WorldAltitudeToMetersFactor.get(playerState.world)
     if (altToMeterFactor !== undefined && altToMeterFactor != 1) {        
         alt = alt * altToMeterFactor;        
@@ -227,7 +219,7 @@ function CalculateGrade(playerState) {
         prevInstantAlt = alt
         var absDeltaAlt = Math.abs(deltaAlt);
         var absInstantDeltaAlt = Math.abs(instantDeltaAlt);
-        console.log(`---- ${iter} Dist=${dist} (${deltaDist}) Alt=${alt.toFixed(2)}/AltO=${altO.toFixed(2)} (${deltaAlt.toFixed(3)}) snr=${snr.toFixed(3)} up=${accElevationGain.toFixed(1)} down=${accElevationLoss.toFixed(1)} world=${playerState.world} first=${first}`);
+        console.log(`---- ${iter} Dist=${dist} (${deltaDist}) Alt=${alt.toFixed(2)}/AltO=${altO.toFixed(2)} (${deltaAlt.toFixed(3)}) snr=${snr.toFixed(3)} up=${accElevationGain.toFixed(1)} down=${accElevationLoss.toFixed(1)} world=${playerState.world} first=${first} pId=${playerId}`);
     }
 
     if (first) {
@@ -258,7 +250,7 @@ function CalculateGrade(playerState) {
         if (snr < 3.5) { // consider SNR < 4
             var gradeAvg = m_sma(curGrade);
             //console.log(`---- Dist=${dist} (${deltaDist}) Alt=${alt.toFixed(2)}/AltO=${altO.toFixed(2)} (${deltaAlt.toFixed(3)}) snr=${snr.toFixed(3)} up=${accElevationGain.toFixed(1)} down=${accElevationLoss.toFixed(1)} grade=${curGrade.toFixed(2)}/${curGrade.toFixed(0)} gradeAvg=${gradeAvg.toFixed(2)}/${gradeAvg.toFixed(0)} world=${playerState.world}`);
-            SendGrade(curGrade);
+            SendGrade(curGrade, playerId);
             return;
         }
     }
@@ -278,19 +270,11 @@ function CalculateGrade(playerState) {
 
     prevDist = dist;
     prevAlt = alt;
-    SendGrade(curGrade);
+    SendGrade(curGrade, playerId);
 }
 
 if (zmm) {
-    var interfaceName = "NA";
-    try {
-        interfaceName = JSON.stringify(Cap.findDevice(publicIp), null, 4);
-    }
-    catch (e) {
-        console.log('Failed to find interface for ', publicIp)
-    }
-
-    console.log('Broadcasting on:', publicIp, interfaceName);
+    console.log('Broadcasting on:', publicIp);
 
     zmm.on('data', (playerState) => {
         try {
@@ -300,28 +284,37 @@ if (zmm) {
         } catch (e) {
             console.log(e)
         }
-   })
-
-    zmm.on('status.started', () => {
-        console.log('status.started')
     })
 
-    zmm.on('status.stopped', () => {
-        console.log('status.stopped')
+    zmm.on('status.started', (...args) => {
+        console.log('status.started', args)
     })
 
-    zmm.on('status.stopping', () => {
-        console.log('status.stopping')
+    zmm.on('status.stopped', (...args) => {
+        console.log('status.stopped', args)
     })
 
+    zmm.on('status.stopping', (...args) => {
+        console.log('status.stopping', args)
+    })
 
-    try {
-        zmm.start()
-        if (zmm.lasterror)
-        {
-            console.log('last error:', zmm.lasterror)
+    zmm.on('status.retrying', (...args) => {
+        console.log('status.retrying', args)
+    })
+
+    zmm.once('ready', () => {
+        try {
+            zmm.start()
+            if (zmm.lasterror) {
+                console.log('last error:', zmm.lasterror)
+            }
+        } catch (e) {
+            console.log('error in zmm.start(): ', zmm.lasterror)
         }
-    } catch (e) {
-        console.log('error in zmm.start(): ', zmm.lasterror)
+    })
+    
+    console.log('started')
+    if (zmm.lasterror) {
+        console.log('last error:', zmm.lasterror)
     }
 }

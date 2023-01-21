@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@zwfthcks/zwift-memory-monitor": "github:zwfthcks/zwift-memory-monitor",
-    "cap": "^0.2.1",
     "ip": "^1.1.8"
   }
 }

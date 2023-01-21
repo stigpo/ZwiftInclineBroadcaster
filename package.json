@@ -1,4 +1,25 @@
 {
+  "name": "@stigpo/zwift-incline-broadcaster",
+  "version": "1.0.0",
+  "description": "Zwift incline broadcaster package",
+  "main": "src/Broadcaster.js",
+  "author": "Stig Petter Olsrød",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stigpo/ZwiftInclineBroadcaster.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "zwift"
+  ],
+  "bugs": {
+    "url": "https://github.com/stigpo/ZwiftInclineBroadcaster/issues"
+  },
+  "homepage": "https://github.com/stigpo/ZwiftInclineBroadcaster#readme",
+  "engines": {
+    "npm": ">=8.3.0",
+    "node": ">=14.18.0"
+  },
   "dependencies": {
     "@zwfthcks/zwift-memory-monitor": "github:zwfthcks/zwift-memory-monitor",
     "cap": "^0.2.1",

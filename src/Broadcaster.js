@@ -19,8 +19,22 @@ try {
 
 const ip = require('ip')
 const dgram = require('dgram')
-var publicIp = ip.address("public");
-var broadIp = ip.or(publicIp, "0.0.0.255")
+
+var publicIp = "127.0.0.1";
+var broadcastMask = "0.0.0.255";
+if (process.argv.length > 2) {
+    publicIp = process.argv[2];
+}
+else
+{
+    publicIp = ip.address("public");
+}
+
+if (process.argv.length > 3) {
+    broadcastMask = process.argv[3];
+}
+
+var broadIp = ip.or(publicIp, broadcastMask);
 console.log("Ip:" + publicIp + " bip:" + broadIp);
 
 try {
@@ -65,6 +79,7 @@ function callbackInclineChanged(grade) {
     try {
         console.log('Grade changed: ', grade.toFixed(1));
         var payload = {
+
             grade: Math.round(grade * 10),
             seq: Date.now()
         };
@@ -267,12 +282,15 @@ function CalculateGrade(playerState) {
 }
 
 if (zmm) {
-    console.log('Listening on: ', publicIp, JSON.stringify(Cap.findDevice(publicIp), null, 4));
+    var interfaceName = "NA";
+    try {
+        interfaceName = JSON.stringify(Cap.findDevice(publicIp), null, 4);
+    }
+    catch (e) {
+        console.log('Failed to find interface for ', publicIp)
+    }
 
-    // determine network interface associated with external IP address
-    interface = Cap.findDevice(publicIp);
-
-    // ... and setup monitor on that interface:
+    console.log('Broadcasting on:', publicIp, interfaceName);
 
     zmm.on('data', (playerState) => {
         try {

@@ -323,7 +323,7 @@ function CalculateGrade(playerState) {
 
 try {
     if (zmm) {
-        console.log('ZBI v1.0.0 will be broadcasting on:', publicIp);
+        console.log(`ZBI v1.0.1 will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
 
         zmm.on('data', (playerState) => {
             try {

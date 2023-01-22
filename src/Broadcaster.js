@@ -183,6 +183,54 @@ function Round10th(num) {
     return Math.round((num + Number.EPSILON) * 10) / 10.0;
 }
 
+var running = true;
+function KillProcess() {
+    console.log('KillProcess called');
+    running = false;
+}
+
+if (process.platform === "win32") {
+  var rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.on("SIGINT", function () {
+    process.emit("SIGINT");
+  });
+}
+
+process.on('SIGTERM', KillProcess);
+process.on('SIGINT', KillProcess);
+process.on('uncaughtException', function(e) {
+    console.log('Uncaught exception:', e);
+    KillProcess();
+});
+
+var lastZmmError = null;
+function KeepRunning() {
+    setTimeout(function () {
+        if (zmm) {
+            if (zmm.lasterror) {
+                if (lastZmmError != zmm.lasterror) {
+                    console.log('ZMM last error:', zmm.lasterror);
+                }
+
+                lastZmmError = zmm.lasterror;
+            }
+        } else {
+            console.log('ZMM not defined');
+            KillProcess();
+        }
+        
+        if (running) {
+            KeepRunning();
+        } else {
+            process.exit();
+        }
+    }, 5000);
+}
+
 function CalculateGrade(playerState) {
     var playerId = playerState.player;
     var dist = playerState.distance;
@@ -273,48 +321,67 @@ function CalculateGrade(playerState) {
     SendGrade(curGrade, playerId);
 }
 
-if (zmm) {
-    console.log('Broadcasting on:', publicIp);
+try {
+    if (zmm) {
+        console.log('ZBI v1.0.0 will be broadcasting on:', publicIp);
 
-    zmm.on('data', (playerState) => {
-        try {
-            //console.log(playerState)
-            //console.log("PlayerState: %j", playerState)
-            CalculateGrade(playerState);
-        } catch (e) {
-            console.log(e)
-        }
-    })
-
-    zmm.on('status.started', (...args) => {
-        console.log('status.started', args)
-    })
-
-    zmm.on('status.stopped', (...args) => {
-        console.log('status.stopped', args)
-    })
-
-    zmm.on('status.stopping', (...args) => {
-        console.log('status.stopping', args)
-    })
-
-    zmm.on('status.retrying', (...args) => {
-        console.log('status.retrying', args)
-    })
-
-    zmm.once('ready', () => {
-        try {
-            zmm.start()
-            if (zmm.lasterror) {
-                console.log('last error:', zmm.lasterror)
+        zmm.on('data', (playerState) => {
+            try {
+                //console.log(playerState)
+                //console.log("PlayerState: %j", playerState)
+                CalculateGrade(playerState);
+            } catch (e) {
+                console.log('exception in data', e);
             }
-        } catch (e) {
-            console.log('error in zmm.start(): ', zmm.lasterror)
-        }
-    })
+        })
+
+        zmm.on('status.started', (...args) => {
+            try {
+                console.log('status.started', args)
+            } catch (e) {
+                console.log('exception in started', e)
+            }
+        })
+
+        zmm.on('status.stopped', (...args) => {
+            try {
+                console.log('status.stopped', args)
+            } catch (e) {
+                console.log('exception in stopped', e)
+            }
+        })
+
+        zmm.on('status.stopping', (...args) => {
+            try {
+                console.log('status.stopping', args)
+            } catch (e) {
+                console.log('exception in stopping', e)
+            }
+        })
+
+        zmm.on('status.retrying', (...args) => {
+            try {
+                //console.log('status.retrying', args)
+                process.stdout.write('.');
+            } catch (e) {
+                console.log('exception in retrying', e)
+            }
+        })
+
+        zmm.once('ready', () => {
+            try {
+                console.log('Ready, starting ZMM');
+                zmm.start()
+            } catch (e) {
+                console.log('error in zmm.start(): ', zmm.lasterror)
+            }
+        })
     
-    console.log('started')
-    if (zmm.lasterror) {
-        console.log('last error:', zmm.lasterror)
+        console.log('Intialization done');
+        KeepRunning();
+    } else {
+        console.log('ZMM was not initialized. Check installation of Node and permissions. Remember to add Native Tools when installing Node.');
     }
+} catch (e) {
+    console.log('exception in startup', e);
 }

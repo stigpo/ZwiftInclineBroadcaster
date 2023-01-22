@@ -21,7 +21,7 @@
     "node": ">=14.18.0"
   },
   "dependencies": {
-    "@zwfthcks/zwift-memory-monitor": "github:zwfthcks/zwift-memory-monitor",
+    "@zwfthcks/zwift-memory-monitor": "github:zwfthcks/zwift-memory-monitor#semver:^2.0.0",
     "ip": "^1.1.8"
   }
 }

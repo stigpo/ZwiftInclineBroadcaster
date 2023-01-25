@@ -9,6 +9,7 @@ If you want information on the BLE/FTMS approach you can have a look at [How to 
 ## Installing
 
 Download [node.js](https://nodejs.org/en/download/current/)\
+I have tested with the 64-bit version. I think you would need the bitness of the OS (which I guess for most is 64-bit these days).\
 During the installation process you must tick the option to install additional tools for Native Modules (Chocolatey)\
 ![Image of Tools for Native Modules installer page](/images/NodeInstallNativeTools.png)
 

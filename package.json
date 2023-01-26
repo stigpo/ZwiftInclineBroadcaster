@@ -10,8 +10,19 @@
   },
   "license": "MIT",
   "keywords": [
-    "zwift"
+    "zwift", "incline", "automatic-incline"
   ],
+  "scripts": {
+    "pkg": "npx pkg -t node18 --out-path ./build package.json",
+    "start": "node src/Broadcaster.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "src/Broadcaster.js",
+  "pkg": {
+    "scripts": [
+      "src/Broadcaster.js"
+    ]
+  },
   "bugs": {
     "url": "https://github.com/stigpo/ZwiftInclineBroadcaster/issues"
   },

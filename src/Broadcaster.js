@@ -116,12 +116,12 @@ class World {
 // moving average class
 var m_sma = simple_moving_averager(3);
 const FeetToMeter = 0.3048;
-const WatopianFeetToMeter = 0.5;
+const MileToMeter = 1609.344;
 const WorldAltitudeToMetersFactor = new Map([
-    [World.Watopia.id, WatopianFeetToMeter],
+    [World.Watopia.id, 0.5],
     [World.Richmond.id, 1],
     [World.London.id, 1],
-    [World.NewYork.id, 1],
+    [World.NewYork.id, 0.75],
     [World.Innsbruck.id, 1],
     [6, 1],
     [World.Yorkshire.id, 1],
@@ -135,7 +135,7 @@ const WorldAltitudeToMetersOffset = new Map([
     [World.Watopia.id,    -4500],
     [World.Richmond.id,   -9000],
     [World.London.id,    -10000],
-    [World.NewYork.id,   -10000],
+    [World.NewYork.id,    -6750],
     [World.Innsbruck.id, +13500],
     [6, 0],
     [World.Yorkshire.id,  -9000],
@@ -323,7 +323,7 @@ function CalculateGrade(playerState) {
 
 try {
     if (zmm) {
-        console.log(`ZBI v1.0.1 will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
+        console.log(`ZBI v1.0.2p will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
 
         zmm.on('data', (playerState) => {
             try {

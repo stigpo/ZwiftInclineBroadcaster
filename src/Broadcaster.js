@@ -94,6 +94,7 @@ class World {
     static Makuri = new World(9); 
     static France = new World(10); 
     static Paris = new World(11); 
+    static Scotland = new World(13);
 
     static get(intValue) {
         var values = Object.values(World);
@@ -129,6 +130,7 @@ const WorldAltitudeToMetersFactor = new Map([
     [World.Makuri.id, 1],
     [World.France.id, 1],
     [World.Paris.id, 0.5],
+    [World.Scotland.id, 0.5],
 ]);
 
 const WorldAltitudeToMetersOffset = new Map([
@@ -143,6 +145,7 @@ const WorldAltitudeToMetersOffset = new Map([
     [World.Makuri.id,    -15000], 
     [World.France.id,     -9000],
     [World.Paris.id,      -4500],
+    [World.Scotland.id,   -4500],
 ]);
 
 var prevDist = 0;
@@ -323,7 +326,7 @@ function CalculateGrade(playerState) {
 
 try {
     if (zmm) {
-        console.log(`ZBI v1.0.2 will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
+        console.log(`ZBI v1.0.3pre will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
 
         zmm.on('data', (playerState) => {
             try {

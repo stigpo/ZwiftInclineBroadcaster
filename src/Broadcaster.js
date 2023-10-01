@@ -326,7 +326,7 @@ function CalculateGrade(playerState) {
 
 try {
     if (zmm) {
-        console.log(`ZIB v1.0.3 will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
+        console.log(`ZIB v1.0.4pre1 will be broadcasting on ${BROADCAST_ADDR}:${PORT}`);
 
         zmm.on('data', (playerState) => {
             try {

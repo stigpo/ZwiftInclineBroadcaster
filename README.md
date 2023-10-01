@@ -39,5 +39,6 @@ node .\src\Broadcaster.js [<ip> [<mask>]]
 Note: There is a bug in the Zwift Installer that will cause the Zwift Launcher to inherit the elevation of the installer. This means that if you just updated and had to elevate in order to upgrade, your Zwift Launcher and subsequently the ZwiftApp will be running elevated. This will make the Zwift Memory Monitor unable to read the memory. I suggest that you restart the Zwift Launcher (from the windows tray) to make it run with normal privileges. The worse alternative is to elevate the ZwiftInclineBroadcaster (i.e. run PowerShell as administrator), but I would avoid that.
 
 ## Supported
-- Tested on Zwift 1.33.0 (and 1.32.[1-2])
+- Last tested with: Zwift version 1.49.0
+- Works with Zwift >= 1.32.0
 - Node >=14.18.0 (but only tested w/Node >=19)

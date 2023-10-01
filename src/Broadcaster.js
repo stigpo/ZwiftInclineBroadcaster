@@ -371,15 +371,23 @@ try {
             }
         })
 
-        zmm.once('ready', () => {
+        zmm.on('status.loaded', () => {
+            console.log('status.loaded')
             try {
                 console.log('Ready, starting ZMM');
                 zmm.start()
+                console.log('zmm.start(): ', zmm.lasterror)
             } catch (e) {
                 console.log('error in zmm.start(): ', zmm.lasterror)
             }
         })
-    
+
+        zmm.once('ready', () => {
+            console.log('ready, loading lookup data')
+            zmm.loadURL('https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@main/build/data/lookup-playerstate.json')
+            console.log('loaded lookup data')
+        })
+
         console.log('Intialization done');
         KeepRunning();
     } else {

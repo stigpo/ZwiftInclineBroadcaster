@@ -31,7 +31,7 @@ node .\src\Broadcaster.js
 node .\src\Broadcaster.js
 ```
 
-If for some reason the IP address calculated by the script is correct (it should be your LAN address), you can override it
+If for some reason the IP address calculated by the script is not correct (it should be your LAN address), you can override it
 ```
 node .\src\Broadcaster.js [<ip> [<mask>]]
 ```

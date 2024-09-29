@@ -12,6 +12,29 @@ const zmm = new ZwiftMemoryMonitor(
 const ip = require('ip')
 const dgram = require('dgram')
 
+const fetch = require('node-fetch');
+console.log('Fetch');
+
+(async () => {
+    console.log('Fetch pre');
+    try
+    {
+        const response = await fetch('https://cdn.jsdelivr.net/gh/stigpo/ZwiftInclineBroadcaster@main/build/data/lookup-playerstateHeuristic.json');
+   
+        //console.log('Fetch data ', response);
+        if (response.size > 0) {
+            const data = await response.json();
+
+            console.log('Fetch data');
+            console.log(data);
+            console.log('Fetch data');
+        }
+    } catch (e) {
+        console.log(e)
+        return;
+    }
+})();
+
 var publicIp = "127.0.0.1";
 var broadcastMask = "0.0.0.255";
 if (process.argv.length > 2) {
@@ -384,7 +407,7 @@ try {
 
         zmm.once('ready', () => {
             console.log('ready, loading lookup data')
-            zmm.loadURL('https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@main/build/data/lookup-playerstate.json')
+            zmm.loadURL('https://cdn.jsdelivr.net/gh/zwfthcks/zwift-memory-monitor@main/build/data/lookup-playerstateHeuristic.json', { cache: 'no-cache' })
             console.log('loaded lookup data')
         })
 
